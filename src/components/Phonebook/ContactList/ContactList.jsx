@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import css from './Style.module.css';
 
 const ContactList = ({ contacts, deleteContact, filter }) => {
   const shownContacts = contacts.filter(person =>
@@ -10,7 +11,12 @@ const ContactList = ({ contacts, deleteContact, filter }) => {
         return (
           <li key={contact.id}>
             {contact.name} {contact.number}{' '}
-            <button type="button" name={contact.name} onClick={deleteContact}>
+            <button
+              className={css.button}
+              type="button"
+              name={contact.name}
+              onClick={deleteContact}
+            >
               Delete
             </button>
           </li>

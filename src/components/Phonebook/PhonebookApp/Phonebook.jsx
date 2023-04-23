@@ -1,42 +1,32 @@
-import { Component } from 'react';
 import { nanoid } from 'nanoid';
 import ContactForm from '../ContactForm/ContactForm';
 import ContactList from '../ContactList/ContactList';
 import PropTypes from 'prop-types';
 import Filter from '../Filter/Filter';
+import { useEffect, useState } from 'react';
 
-class Phonebook extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+const Phonebook = () => {
+  const [contacts, setContacts] = useState([]);
+  const [filter, setFilter] = useState('');
 
-  static propTypes = {
-    contacts: PropTypes.array,
-    filter: PropTypes.string,
-  };
-
-  componentDidMount() {
+  useEffect(() => {
     if (localStorage.getItem('contacts')) {
-      this.setState({
-        contacts: JSON.parse(localStorage.getItem('contacts')),
-      });
+      setContacts(JSON.parse(localStorage.getItem('contacts')));
     } else {
       localStorage.setItem('contacts', JSON.stringify([]));
     }
-  }
+  }, []);
 
-  componentDidUpdate() {
-    localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-  }
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  });
 
-  addContact = event => {
+  const addContact = event => {
     event.preventDefault();
 
     const nameInput = document.querySelector('#name').value;
 
     const numberInput = document.querySelector('#number').value;
-    const { contacts } = this.state;
 
     const nameExists = contacts.some(contact => contact.name === nameInput);
 
@@ -50,16 +40,14 @@ class Phonebook extends Component {
       number: numberInput,
     };
 
-    this.setState(prevState => ({
-      contacts: [...prevState.contacts, newContact],
-    }));
+    setContacts([...contacts, newContact]);
   };
 
-  deleteContact = event => {
+  const deleteContact = event => {
     event.preventDefault();
 
     const targetName = event.target.name;
-    const newContacts = [...this.state.contacts];
+    const newContacts = [...contacts];
 
     const targetIndex = newContacts.findIndex(
       element => element.name === targetName
@@ -67,37 +55,36 @@ class Phonebook extends Component {
 
     newContacts.splice(targetIndex, 1);
 
-    this.setState(() => ({
-      contacts: newContacts,
-    }));
+    setContacts(newContacts);
   };
 
-  handleFilterUpdate = event => {
+  const handleFilterUpdate = event => {
     event.preventDefault();
-    // @ts-ignore
+
     const newFilterValue = document.querySelector('#filter-input').value;
 
     console.log(newFilterValue);
-    this.setState(() => ({
-      filter: newFilterValue,
-    }));
+    setFilter(newFilterValue);
   };
 
-  render() {
-    return (
-      <>
-        <h1>Phonebook</h1>
-        <ContactForm addContact={this.addContact} />
-        <h2>Contacts</h2>
-        <Filter handleFilterUpdate={this.handleFilterUpdate} />
-        <ContactList
-          contacts={this.state.contacts}
-          deleteContact={this.deleteContact}
-          filter={this.state.filter}
-        />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <h1>Phonebook</h1>
+      <ContactForm addContact={addContact} />
+      <h2>Contacts</h2>
+      <Filter handleFilterUpdate={handleFilterUpdate} />
+      <ContactList
+        contacts={contacts}
+        deleteContact={deleteContact}
+        filter={filter}
+      />
+    </>
+  );
+};
+
+Phonebook.propTypes = {
+  contacts: PropTypes.array,
+  filter: PropTypes.string,
+};
 
 export default Phonebook;

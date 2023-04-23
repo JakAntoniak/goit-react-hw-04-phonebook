@@ -22,7 +22,7 @@ const ContactForm = ({ addContact }) => {
         title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
         required
       />
-      <button type="submit" onClick={addContact}>
+      <button className={css.button} type="submit" onClick={addContact}>
         Add contact
       </button>
     </form>

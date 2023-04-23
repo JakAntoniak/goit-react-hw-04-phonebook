@@ -1,15 +1,28 @@
 .contact-form {
   display: flex;
   flex-direction: column;
+  width: 300px;
 }
 
-.contact-form > input,
-.contact-form > button,
-.filter > input {
-  width: 300px;
+.contact-form > label {
+  margin: 5px 0;
+  font-weight: 600;
 }
 
 .filter {
   display: flex;
   flex-direction: column;
+  width: 300px;
+}
+
+.filter > label {
+  margin: 5px 0;
+  font-weight: 600;
+}
+
+.button {
+  padding: 10px;
+  width: 100px;
+  margin: 10px auto;
+  cursor: pointer;
 }
