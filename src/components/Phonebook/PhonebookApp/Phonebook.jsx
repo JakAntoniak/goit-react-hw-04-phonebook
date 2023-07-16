@@ -1,28 +1,26 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import ContactForm from '../ContactForm/ContactForm';
 import ContactList from '../ContactList/ContactList';
 import PropTypes from 'prop-types';
 import Filter from '../Filter/Filter';
 
-class Phonebook extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+const Phonebook = () => {
+  const [filter, setFilter] = useState('');
+  const [contacts, setContacts] = useState(() => {
+    return JSON.parse(localStorage.getItem('contacts')) || [];
+  });
 
-  static propTypes = {
-    contacts: PropTypes.array,
-    filter: PropTypes.string,
-  };
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
-  addContact = event => {
+  const addContact = event => {
     event.preventDefault();
 
     const nameInput = document.querySelector('#name').value;
 
     const numberInput = document.querySelector('#number').value;
-    const { contacts } = this.state;
 
     const nameExists = contacts.some(contact => contact.name === nameInput);
 
@@ -36,16 +34,14 @@ class Phonebook extends Component {
       number: numberInput,
     };
 
-    this.setState(prevState => ({
-      contacts: [...prevState.contacts, newContact],
-    }));
+    setContacts([...contacts, newContact]);
   };
 
-  deleteContact = event => {
+  const deleteContact = event => {
     event.preventDefault();
 
     const targetName = event.target.name;
-    const newContacts = [...this.state.contacts];
+    const newContacts = [...contacts];
 
     const targetIndex = newContacts.findIndex(
       element => element.name === targetName
@@ -53,36 +49,35 @@ class Phonebook extends Component {
 
     newContacts.splice(targetIndex, 1);
 
-    this.setState(() => ({
-      contacts: newContacts,
-    }));
+    setContacts(newContacts);
   };
 
-  handleFilterUpdate = event => {
+  const handleFilterUpdate = event => {
     event.preventDefault();
 
     const newFilterValue = document.querySelector('#filter-input').value;
 
-    this.setState(() => ({
-      filter: newFilterValue,
-    }));
+    setFilter(newFilterValue);
   };
 
-  render() {
-    return (
-      <>
-        <h1>Phonebook</h1>
-        <ContactForm addContact={this.addContact} />
-        <h2>Contacts</h2>
-        <Filter handleFilterUpdate={this.handleFilterUpdate} />
-        <ContactList
-          contacts={this.state.contacts}
-          deleteContact={this.deleteContact}
-          filter={this.state.filter}
-        />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <h1>Phonebook</h1>
+      <ContactForm addContact={addContact} />
+      <h2>Contacts</h2>
+      <Filter handleFilterUpdate={handleFilterUpdate} />
+      <ContactList
+        contacts={contacts}
+        deleteContact={deleteContact}
+        filter={filter}
+      />
+    </>
+  );
+};
 
 export default Phonebook;
+
+Phonebook.propTypes = {
+  contacts: PropTypes.array,
+  filter: PropTypes.string,
+};
