@@ -20,11 +20,12 @@
 }
 
 .button {
-  width: 200px;
+  width: 150px;
   padding: 15px 0;
   border: none;
   border-radius: 8px;
   font-size: 1.2em;
+  background-color: rgb(216, 212, 212);
   font-family: 'Quicksand', sans-serif;
 }
 
